@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>05 Emergency</title>
+    <style>
+      body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+      h1 { font-size: 2em; text-align: center; margin-bottom: 20px; }
+
+      #checklist-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+      #checklist-links a { text-decoration: none; padding: 10px 20px; background-color: #674ea7; color: white; border-radius: 6px; font-size: 1.2em; }
+      #checklist-links a:active { background-color: #1976d2; }
+
+      .toc { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; padding: 10px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 8px; }
+      .toc-link { font-size: 1em; text-decoration: none; padding: 8px 12px; background: #b71c1c; color: white; border-radius: 5px; }
+      .toc-link:active { background: #7f0000; }
+
+      .section { margin-bottom: 30px; }
+      .section-header { font-size: 1.4em; font-weight: bold; padding: 10px 14px; border-radius: 8px 8px 0 0; color: white; margin-bottom: 0; }
+      .section-header.abnormal { background: #e65100; }
+      .section-header.emergency { background: #b71c1c; }
+
+      .proc { background: white; border: 2px solid #ccc; border-radius: 0 0 8px 8px; padding: 0; overflow: hidden; margin-bottom: 6px; }
+      .proc-title { font-size: 1.2em; font-weight: bold; padding: 12px 16px 6px 16px; color: #222; }
+      .proc-note { font-size: 0.95em; color: #555; padding: 0 16px 8px 16px; font-style: italic; }
+      .proc-step { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 16px; border-top: 1px solid #eee; font-size: 1.05em; }
+      .proc-step .action { font-weight: bold; color: #1a237e; flex: 1; padding-right: 10px; }
+      .proc-step .value { color: #333; text-align: right; flex: 1; }
+      .proc-step.bold-value .value { font-weight: bold; color: #b71c1c; }
+      .proc-step.italic { font-style: italic; color: #555; font-size: 0.95em; }
+      .proc-step.italic .action { color: #555; font-weight: normal; }
+
+      .group-header { font-size: 1.3em; font-weight: bold; margin-top: 24px; margin-bottom: 8px; padding-left: 5px; color: #333; border-left: 4px solid #b71c1c; }
+      .group-header.abnormal { border-left-color: #e65100; }
+    </style>
+  </head>
+  <body>
+    <h1>05 Emergency</h1>
+
+    <div id="checklist-links">
+      <a href="01 - Start and Taxi.html">01 Start & Taxi</a>
+      <a href="02 - Runup.html">02 Runup</a>
+      <a href="03 - Air.html">03 Air</a>
+      <a href="04 - After Landing.html">04 After Landing</a>
+      <a href="05 - Emergency.html">05 Emergency</a>
+    </div>
+
+    <div class="toc" id="toc"></div>
+
+    <!-- ABNORMAL PROCEDURES -->
+    <div class="group-header abnormal" id="abnormal">⚠️ Abnormal Procedures</div>
+
+    <div class="section" id="open-door">
+      <div class="section-header abnormal">Open Door</div>
+      <div class="proc">
+        <div class="proc-note">If both latches open: door trails slightly, airspeeds slightly reduced.</div>
+        <div class="proc-title">To close door in flight:</div>
+        <div class="proc-step"><span class="action">Airspeed</span><span class="value">Slow to 89 KIAS</span></div>
+        <div class="proc-step"><span class="action">Cabin Vents</span><span class="value">CLOSE</span></div>
+        <div class="proc-step"><span class="action">Storm Window</span><span class="value">OPEN</span></div>
+        <div class="proc-step"><span class="action">If upper latch open</span><span class="value">LATCH</span></div>
+        <div class="proc-step"><span class="action">If side latch open</span><span class="value">Pull on armrest while moving latch to latched position</span></div>
+        <div class="proc-step"><span class="action">If both latches open</span><span class="value">Latch side latch, then top latch</span></div>
+      </div>
+    </div>
+
+    <div class="section" id="engine-roughness">
+      <div class="section-header abnormal">Engine Roughness</div>
+      <div class="proc">
+        <div class="proc-step"><span class="action">Carburettor Heat</span><span class="value">ON</span></div>
+        <div class="proc-title">If roughness continues after 1 min:</div>
+        <div class="proc-step"><span class="action">Carburettor Heat</span><span class="value">OFF</span></div>
+        <div class="proc-step"><span class="action">Mixture</span><span class="value">Adjust for max smoothness</span></div>
+        <div class="proc-step"><span class="action">Electric Fuel Pump</span><span class="value">ON</span></div>
+        <div class="proc-step"><span class="action">Fuel Selector</span><span class="value">SWITCH TANKS</span></div>
+        <div class="proc-step"><span class="action">Engine Gauges</span><span class="value">CHECK</span></div>
+        <div class="proc-step"><span class="action">Magneto Switch</span><span class="value">"L" then "R" then "BOTH"</span></div>
+        <div class="proc-note">If satisfactory on one magneto: continue at reduced power, full RICH, to nearest airport. Prepare for power-off landing.</div>
+      </div>
+    </div>
+
+    <div class="section" id="carb-icing">
+      <div class="section-header abnormal">Carburettor Icing</div>
+      <div class="proc">
+        <div class="proc-step"><span class="action">Carburettor Heat</span><span class="value">ON</span></div>
+        <div class="proc-step"><span class="action">Mixture</span><span class="value">Adjust for max smoothness</span></div>
+      </div>
+    </div>
+
+    <!-- EMERGENCY PROCEDURES -->
+    <div class="group-header" id="emergency">🚨 Emergency Procedures</div>
+
+    <div class="section" id="engine-failure">
+      <div class="section-header emergency">Engine Failure in Flight</div>
+      <div class="proc">
+        <div class="proc-title">AVIATE – NAVIGATE – COMMUNICATE</div>
+        <div class="proc-step bold-value"><span class="action">Glide Speed</span><span class="value">73 KIAS</span></div>
+        <div class="proc-step"><span class="action">Carburettor Heat</span><span class="value">ON</span></div>
+        <div class="proc-step"><span class="action">Fuel Pump</span><span class="value">ON</span></div>
+        <div class="proc-step"><span class="action">Mixture</span><span class="value">FULL RICH</span></div>
+        <div class="proc-step"><span class="action">Magnetos</span><span class="value">BOTH</span></div>
+        <div class="proc-title">If power not restored – select suitable field. If time permits:</div>
+        <div class="proc-step"><span class="action">Fuel Selector</span><span class="value">Ensure on tank with fuel</span></div>
+        <div class="proc-step"><span class="action">Fuel Pump</span><span class="value">CHECK ON</span></div>
+        <div class="proc-step"><span class="action">Mixture</span><span class="value">Cycle through range</span></div>
+        <div class="proc-step"><span class="action">Oil Temp & Press</span><span class="value">CHECK FOR POWER LOSS CAUSE</span></div>
+        <div class="proc-step"><span class="action">Switches</span><span class="value">Isolate Magnetos</span></div>
+        <div class="proc-step"><span class="action">Primer</span><span class="value">CHECK LOCKED</span></div>
+        <div class="proc-step"><span class="action">Throttle</span><span class="value">Cycle through range</span></div>
+        <div class="proc-title">If power restored:</div>
+        <div class="proc-step"><span class="action">Carburettor Heat</span><span class="value">OFF</span></div>
+        <div class="proc-step"><span class="action">Fuel Pump</span><span class="value">OFF</span></div>
+        <div class="proc-title">If power NOT restored – forced landing:</div>
+        <div class="proc-step"><span class="action">Declare Mayday</span><span class="value">Broadcast on TWR/CENTER</span></div>
+        <div class="proc-step"><span class="action">Brief Passengers</span><span class="value">As appropriate</span></div>
+        <div class="proc-step"><span class="action">Brakes</span><span class="value">Check for pressure</span></div>
+        <div class="proc-step"><span class="action">Undercarriage</span><span class="value">Fixed</span></div>
+        <div class="proc-step"><span class="action">Switches</span><span class="value">Magnetos & Master OFF, Mixture ICO, Fuel Selector OFF</span></div>
+        <div class="proc-step"><span class="action">Harnesses</span><span class="value">Secure</span></div>
+        <div class="proc-note">When field can be reached slow to 63 kts for shortest landing. Touchdown at lowest possible airspeed with full flaps.</div>
+      </div>
+    </div>
+
+    <div class="section" id="high-oil-temp">
+      <div class="section-header emergency">High Oil Temperature</div>
+      <div class="proc">
+        <div class="proc-step bold-value"><span class="action">Land</span><span class="value">Nearest airport – investigate</span></div>
+        <div class="proc-step bold-value"><span class="action">Prepare for</span><span class="value">POWER OFF LANDING</span></div>
+      </div>
+    </div>
+
+    <div class="section" id="loss-oil-pressure">
+      <div class="section-header emergency">Loss of Oil Pressure</div>
+      <div class="proc">
+        <div class="proc-step bold-value"><span class="action">Land</span><span class="value">As soon as possible – investigate</span></div>
+        <div class="proc-step bold-value"><span class="action">Prepare for</span><span class="value">POWER OFF LANDING</span></div>
+      </div>
+    </div>
+
+    <div class="section" id="loss-fuel-pressure">
+      <div class="section-header emergency">Loss of Fuel Pressure</div>
+      <div class="proc">
+        <div class="proc-step"><span class="action">Electric Fuel Pump</span><span class="value">ON</span></div>
+        <div class="proc-step"><span class="action">Fuel Selector</span><span class="value">Check on full tank</span></div>
+      </div>
+    </div>
+
+    <div class="section" id="engine-fire-start">
+      <div class="section-header emergency">Engine Fire During Start</div>
+      <div class="proc">
+        <div class="proc-step"><span class="action">Starter</span><span class="value">CONTINUE CRANKING</span></div>
+        <div class="proc-step"><span class="action">Mixture</span><span class="value">IDLE CUT-OFF</span></div>
+        <div class="proc-step"><span class="action">Throttle</span><span class="value">FULL OPEN</span></div>
+        <div class="proc-step"><span class="action">Fuel Pump</span><span class="value">OFF</span></div>
+        <div class="proc-step"><span class="action">Fuel Selector</span><span class="value">OFF</span></div>
+        <div class="proc-step bold-value"><span class="action">If fire continues</span><span class="value">ABANDON</span></div>
+      </div>
+    </div>
+
+    <div class="section" id="fire-in-flight">
+      <div class="section-header emergency">Fire in Flight</div>
+      <div class="proc">
+        <div class="proc-step"><span class="action">Source of Fire</span><span class="value">CHECK</span></div>
+        <div class="proc-title">Electrical Fire (smoke in cabin):</div>
+        <div class="proc-step"><span class="action">Master Switch</span><span class="value">OFF</span></div>
+        <div class="proc-step"><span class="action">Vents</span><span class="value">OPEN</span></div>
+        <div class="proc-step"><span class="action">Cabin Heat</span><span class="value">OFF</span></div>
+        <div class="proc-step bold-value"><span class="action">Land</span><span class="value">As soon as practicable</span></div>
+        <div class="proc-title">Engine Fire:</div>
+        <div class="proc-step"><span class="action">Fuel Selector</span><span class="value">OFF</span></div>
+        <div class="proc-step"><span class="action">Throttle</span><span class="value">CLOSED</span></div>
+        <div class="proc-step"><span class="action">Mixture</span><span class="value">IDLE CUT-OFF</span></div>
+        <div class="proc-step"><span class="action">Fuel Pump</span><span class="value">OFF</span></div>
+        <div class="proc-step"><span class="action">Heater & Defroster</span><span class="value">OFF</span></div>
+        <div class="proc-step"><span class="action">Cabin Heat</span><span class="value">OFF</span></div>
+        <div class="proc-step bold-value"><span class="action">Proceed with</span><span class="value">POWER OFF LANDING</span></div>
+      </div>
+    </div>
+
+    <div class="section" id="electrical-failure">
+      <div class="section-header emergency">Electrical Failure</div>
+      <div class="proc">
+        <div class="proc-note">ALT annunciator illuminated – check ammeter to verify inoperative alternator.</div>
+        <div class="proc-title">If ammeter shows zero:</div>
+        <div class="proc-step"><span class="action">ALT Switch</span><span class="value">OFF</span></div>
+        <div class="proc-step"><span class="action">Electrical Loads</span><span class="value">Reduce to minimum</span></div>
+        <div class="proc-step"><span class="action">ALT Circuit Breaker</span><span class="value">Check and reset as required</span></div>
+        <div class="proc-step"><span class="action">ALT Switch</span><span class="value">ON</span></div>
+        <div class="proc-title">If power not restored:</div>
+        <div class="proc-step"><span class="action">ALT Switch</span><span class="value">OFF</span></div>
+        <div class="proc-step bold-value"><span class="action">Land ASAP</span><span class="value">Battery is only remaining power source</span></div>
+      </div>
+    </div>
+
+    <div class="section" id="electrical-overload">
+      <div class="section-header emergency">Electrical Overload</div>
+      <div class="proc">
+        <div class="proc-note">Alternator over 20 amps above known electrical load.</div>
+        <div class="proc-step"><span class="action">ALT Switch</span><span class="value">ON</span></div>
+        <div class="proc-step"><span class="action">BATT Switch</span><span class="value">OFF</span></div>
+        <div class="proc-title">If alternator loads are reduced:</div>
+        <div class="proc-step bold-value"><span class="action">Electrical Load</span><span class="value">Reduce to minimum and land ASAP</span></div>
+        <div class="proc-title">If alternator loads are NOT reduced:</div>
+        <div class="proc-step"><span class="action">ALT Switch</span><span class="value">OFF</span></div>
+        <div class="proc-step"><span class="action">BATT Switch</span><span class="value">As required</span></div>
+        <div class="proc-step bold-value"><span class="action">Land ASAP</span><span class="value">Anticipate complete electrical failure</span></div>
+      </div>
+    </div>
+
+    <!-- Emergency Contacts -->
+    <div class="group-header" id="contacts" style="border-left-color:#1b5e20;">📞 Emergency Contacts</div>
+    <div style="background:white; border-radius:10px; border:2px solid #ccc; padding:16px 20px; margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:1.1em;"><span>Emergency Services</span><span style="font-weight:bold;">000</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:1.1em;"><span>HOO – Karl Mackay</span><span style="font-weight:bold;">0414 782 450</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:1.1em;"><span>HOFO – Davide Ierkic</span><span style="font-weight:bold;">0406 160 540</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:1.1em;"><span>Safety Manager – Corey Spencer</span><span style="font-weight:bold;">0448 772 042</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:1.1em;"><span>RVAC Front Desk</span><span style="font-weight:bold;">(03) 8586 7777</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:1.1em;"><span>RVAC Hangar</span><span style="font-weight:bold;">(03) 8586 7710</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:1.1em;"><span>Moorabbin Tower</span><span style="font-weight:bold;">(03) 9586 6180</span></div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:1.1em;"><span>Moorabbin Tower (HN)</span><span style="font-weight:bold;">(03) 9235 7420</span></div>
+    </div>
+
+    <script>
+      const toc = document.getElementById("toc");
+      const sections = [
+        { id: "abnormal", label: "⚠️ Abnormal" },
+        { id: "open-door", label: "Open Door" },
+        { id: "engine-roughness", label: "Engine Roughness" },
+        { id: "carb-icing", label: "Carb Icing" },
+        { id: "emergency", label: "🚨 Emergency" },
+        { id: "engine-failure", label: "Engine Failure" },
+        { id: "high-oil-temp", label: "High Oil Temp" },
+        { id: "loss-oil-pressure", label: "Loss Oil Press" },
+        { id: "loss-fuel-pressure", label: "Loss Fuel Press" },
+        { id: "engine-fire-start", label: "Engine Fire Start" },
+        { id: "fire-in-flight", label: "Fire in Flight" },
+        { id: "electrical-failure", label: "Elec Failure" },
+        { id: "electrical-overload", label: "Elec Overload" },
+        { id: "contacts", label: "📞 Contacts" },
+      ];
+      sections.forEach(s => {
+        const a = document.createElement("a");
+        a.href = `#${s.id}`;
+        a.textContent = s.label;
+        a.className = "toc-link";
+        toc.appendChild(a);
+      });
+    </script>
+  </body>
+</html>

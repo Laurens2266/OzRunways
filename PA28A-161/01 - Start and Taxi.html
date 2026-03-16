@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <h1 id="page-title">Loading...</h1>
+    <style>
+      body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+      h1 { font-size: 2em; text-align: center; }
+      .item { position: relative; padding: 20px; margin: 10px 0; background: white; border: 2px solid #ccc; border-radius: 10px; cursor: pointer; user-select: none; }
+      .item.done { background: #c8f7c5; border-color: #4caf50; }
+      .item-title { font-size: 1.6em; font-weight: bold; }
+      .item-desc { font-size: 1em; color: #555; margin-top: 5px; }
+      .item-tick { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); font-size: 2em; color: #4caf50; display: none; }
+      .item.done .item-tick { display: block; }
+      .reset-button { margin-top: 30px; padding: 20px; width: 100%; font-size: 1.5em; background-color: #ff5252; color: white; border: none; border-radius: 10px; cursor: pointer; }
+      .reset-button:active { background-color: #e53935; }
+      #checklist-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+      #checklist-links a { text-decoration: none; padding: 10px 20px; background-color: #674ea7; color: white; border-radius: 6px; font-size: 1.2em; }
+      #checklist-links a:active { background-color: #1976d2; }
+      .group-header { font-size: 1.3em; font-weight: bold; margin-top: 20px; margin-bottom: 10px; padding-left: 5px; color: #333; border-left: 4px solid #2196f3; }
+      .toc { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; padding: 10px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 8px; }
+      .toc-link { font-size: 1em; text-decoration: none; padding: 8px 12px; background: #2196f3; color: white; border-radius: 5px; }
+      .toc-link:active { background: #1976d2; }
+      .freq-box { background: #1a237e; color: white; border-radius: 10px; padding: 16px 20px; margin: 20px 0 10px 0; }
+      .freq-box h2 { margin: 0 0 10px 0; font-size: 1.2em; letter-spacing: 0.05em; color: #90caf9; }
+      .freq-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #283593; font-size: 1.1em; }
+      .freq-row:last-child { border-bottom: none; }
+      .freq-label { color: #bbdefb; }
+      .freq-value { font-weight: bold; font-family: monospace; font-size: 1.1em; }
+    </style>
+  </head>
+  <body>
+    <div id="checklist-links">
+      <a href="01 - Start and Taxi.html">01 Start & Taxi</a>
+      <a href="02 - Runup.html">02 Runup</a>
+      <a href="03 - Air.html">03 Air</a>
+      <a href="04 - After Landing.html">04 After Landing</a>
+      <a href="05 - Emergency.html">05 Emergency</a>
+    </div>
+
+    <div class="freq-box">
+      <h2>📻 Moorabbin Frequencies</h2>
+      <div class="freq-row"><span class="freq-label">ATIS</span><span class="freq-value">120.90</span></div>
+      <div class="freq-row"><span class="freq-label">MB Ground</span><span class="freq-value">134.25</span></div>
+      <div class="freq-row"><span class="freq-label">MB Tower East</span><span class="freq-value">118.10</span></div>
+      <div class="freq-row"><span class="freq-label">MB Tower West</span><span class="freq-value">123.00</span></div>
+    </div>
+
+    <div id="toc" class="toc"></div>
+    <div id="checklist"></div>
+    <button class="reset-button" onclick="resetChecklist()">Reset</button>
+
+    <script>
+      const checklistData = [
+        {
+          group: "Pre-Start",
+          items: [
+            { title: "Pre-flight Inspection", desc: "COMPLETE" },
+            { title: "Maintenance Release", desc: "BRIEFED & SIGNED" },
+            { title: "Passenger Brief", desc: "COMPLETE" },
+            { title: "Seats & Seatbelts", desc: "ADJUSTED & LOCKED" },
+            { title: "Park Brake", desc: "ON" },
+            { title: "Fuel Selector", desc: "ON – LEAST tank" },
+            { title: "Circuit Breakers", desc: "CHECK IN" },
+            { title: "Electrics/Avionics", desc: "OFF" },
+          ],
+        },
+        {
+          group: "Start Up",
+          items: [
+            { title: "Mixture", desc: "RICH" },
+            { title: "Throttle", desc: "Set ¼\" Open" },
+            { title: "Carburettor Heat", desc: "OFF" },
+            { title: "BAT/ALT Master", desc: "ON" },
+            { title: "Fuel Pump", desc: "ON" },
+            { title: "Prime", desc: "IF REQUIRED (2-5 Strokes)" },
+            { title: "Magnetos", desc: "ON BOTH" },
+            { title: "Check All Clear", desc: "CALL" },
+            { title: "Starter", desc: "ENGAGE" },
+          ],
+        },
+        {
+          group: "After Start",
+          items: [
+            { title: "Throttle", desc: "SET 1000 RPM" },
+            { title: "Oil Pressure", desc: "GREEN WITHIN 30 SEC or SHUTDOWN" },
+            { title: "Fin Anti-Collision Beacon", desc: "ON" },
+            { title: "Ammeter", desc: "POSITIVE" },
+            { title: "Fuel Pump", desc: "OFF" },
+            { title: "Mixture", desc: "LEAN" },
+            { title: "Radios/Avionics", desc: "ON" },
+          ],
+        },
+        {
+          group: "Taxi",
+          items: [
+            { title: "Brakes", desc: "TEST" },
+            { title: "G5 Artificial Horizon", desc: "LEVEL" },
+            { title: "Turn Co-Ordinator", desc: "L-TURN/R-SKID, R-TURN/L-SKID" },
+            { title: "G5 HSI", desc: "TURNING" },
+            { title: "Compass", desc: "TURNING" },
+          ],
+        },
+      ];
+    </script>
+
+    <script>
+      const filePath = window.location.pathname;
+      const fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+      const baseName = fileName.replace(".html", "").replace(/[-_]/g, " ");
+      const storageKey = `${fileName}_checklistState`;
+
+      document.getElementById("page-title").textContent = decodeURIComponent(
+        baseName.charAt(0).toUpperCase() + baseName.slice(1),
+      );
+
+      const checklistEl = document.getElementById("checklist");
+      const tocEl = document.getElementById("toc");
+      const state = new Set(JSON.parse(localStorage.getItem(storageKey) || "[]"));
+      let globalIndex = 0;
+
+      checklistData.forEach((group) => {
+        const id = group.group.toLowerCase().replace(/\s+/g, "-");
+        const link = document.createElement("a");
+        link.href = `#${id}`;
+        link.textContent = group.group;
+        link.className = "toc-link";
+        tocEl.appendChild(link);
+
+        const groupHeader = document.createElement("div");
+        groupHeader.className = "group-header";
+        groupHeader.id = id;
+        groupHeader.textContent = group.group;
+        checklistEl.appendChild(groupHeader);
+
+        group.items.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = "item";
+          if (state.has(globalIndex)) div.classList.add("done");
+
+          const title = document.createElement("div");
+          title.className = "item-title";
+          title.textContent = item.title;
+
+          const desc = document.createElement("div");
+          desc.className = "item-desc";
+          desc.textContent = item.desc;
+
+          const tick = document.createElement("div");
+          tick.className = "item-tick";
+          tick.innerHTML = "✔";
+
+          div.appendChild(title);
+          div.appendChild(desc);
+          div.appendChild(tick);
+
+          div.addEventListener("click", () => {
+            div.classList.toggle("done");
+            if (div.classList.contains("done")) { state.add(globalIndex); }
+            else { state.delete(globalIndex); }
+            localStorage.setItem(storageKey, JSON.stringify([...state]));
+          });
+
+          checklistEl.appendChild(div);
+          globalIndex++;
+        });
+      });
+
+      function resetChecklist() {
+        localStorage.removeItem(storageKey);
+        document.querySelectorAll(".item").forEach((el) => el.classList.remove("done"));
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
