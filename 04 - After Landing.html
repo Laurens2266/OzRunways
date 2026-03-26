@@ -9,12 +9,12 @@
       h1 { font-size: 2em; text-align: center; }
       .item { position: relative; padding: 20px; margin: 10px 0; background: white; border: 2px solid #ccc; border-radius: 10px; cursor: pointer; user-select: none; }
       .item.done { background: #c8f7c5; border-color: #4caf50; }
+      .item.note { background: #fff8e1; border-color: #ffc107; cursor: default; }
+      .item.note .item-title { font-size: 1.1em; font-weight: normal; color: #795548; font-style: italic; }
       .item-title { font-size: 1.6em; font-weight: bold; }
       .item-desc { font-size: 1em; color: #555; margin-top: 5px; }
       .item-tick { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); font-size: 2em; color: #4caf50; display: none; }
       .item.done .item-tick { display: block; }
-      .item.note { background: #fff8e1; border-color: #ffc107; cursor: default; }
-      .item.note .item-title { font-size: 1.1em; font-weight: normal; color: #795548; font-style: italic; }
       .reset-button { margin-top: 30px; padding: 20px; width: 100%; font-size: 1.5em; background-color: #ff5252; color: white; border: none; border-radius: 10px; cursor: pointer; }
       .reset-button:active { background-color: #e53935; }
       #checklist-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
@@ -27,12 +27,14 @@
     </style>
   </head>
   <body>
-    <div id="checklist-links">
-      <a href="01 - Start and Taxi.html">01 Start & Taxi</a>
+        <div id="checklist-links">
+      <a href="01 - Start and Taxi.html">01 Start &amp; Taxi</a>
       <a href="02 - Runup.html">02 Runup</a>
       <a href="03 - Air.html">03 Air</a>
       <a href="04 - After Landing.html">04 After Landing</a>
       <a href="05 - Emergency.html">05 Emergency</a>
+      <a href="fuel_plan.html">⛽ Fuel Plan</a>
+      <a href="rvac_wb.html">⚖️ W&amp;B</a>
     </div>
     <div id="toc" class="toc"></div>
     <div id="checklist"></div>
@@ -41,44 +43,32 @@
     <script>
       const checklistData = [
         {
-          group: "Pre-Take-Off",
+          group: "After Landing",
           items: [
-            { title: "Park Brake", desc: "ON" },
-            { title: "Power", desc: "1000 RPM" },
-            { title: "Trim", desc: "SET FOR TAKE OFF" },
-            { title: "Throttle Friction", desc: "SET" },
-            { title: "⬇ ONCE OIL TEMP IN GREEN ⬇", desc: "", note: true },
-            { title: "Mixture", desc: "RICH" },
-            { title: "Magnetos", desc: "ON BOTH" },
-            { title: "Primer", desc: "LOCKED" },
-            { title: "Fuel Quantity", desc: "CHECK" },
-            { title: "Fuel Selector", desc: "FULLEST TANK" },
-            { title: "Flaps", desc: "CHECK & SET" },
-            { title: "Instruments & Avionics", desc: "CHECK STANDBY INSTRUMENTS, CHECK G5 PFD & HSI, SET RADIOS & GPS" },
-            { title: "Switches – 2000 RPM", desc: "CHECK MAGS (max 175 drop, 50 diff), CHECK CARBY HEAT" },
-            { title: "Ammeter", desc: "POSITIVE" },
-            { title: "Engine Gauges", desc: "CHECK IN GREEN RANGE" },
-            { title: "Warning Annunciators", desc: "PRESS TO TEST" },
-            { title: "Throttle", desc: "IDLE (600-800 RPM), set 1000 RPM – MIXTURE LEAN FOR TAXI" },
-            { title: "Controls", desc: "CHECK FULL, FREE & CORRECT" },
-            { title: "Hatches & Harnesses", desc: "SHUT & SECURE" },
-            { title: "Take-off Safety Brief", desc: "REVIEW" },
+            { title: "Clear of Runway", desc: "PAST GABLE MARKERS" },
+            { title: "⬇ CONFIRM GROUND FREQUENCY ⬇", desc: "", note: true },
+            { title: "Flaps", desc: "RETRACT" },
+            { title: "Fuel Pump", desc: "OFF" },
+            { title: "Mixture", desc: "LEAN FOR TAXI" },
+            { title: "Lights – Wing Anti-Col", desc: "OFF (ON X'ing RWYs)" },
+            { title: "Lights – NAV", desc: "OFF (LEAVE ON AT NIGHT)" },
+            { title: "Lights – LDG", desc: "OFF (LEAVE ON AT NIGHT)" },
+            { title: "Transponder", desc: "GND or SBY" },
+            { title: "⬇ REQUEST TAXI CLEARANCE ⬇", desc: "", note: true },
           ],
         },
         {
-          group: "Line Up",
+          group: "Shutdown",
           items: [
-            { title: "⬇ CONFIRM CORRECT FREQUENCY ⬇", desc: "", note: true },
-            { title: "Carburettor Heat", desc: "OFF" },
-            { title: "Controls", desc: "CHECK FULL, FREE & CORRECT" },
-            { title: "Fuel Pump", desc: "ON" },
-            { title: "Mixture", desc: "RICH" },
-            { title: "Magnetos", desc: "ON BOTH" },
-            { title: "Lights – Wing Anti-Col", desc: "ON ENTERING RWY" },
-            { title: "Lights – NAV", desc: "OFF (ON NIGHT/REDUCED VIS)" },
-            { title: "Lights – LDG", desc: "ON T/O CLEARANCE" },
-            { title: "Transponder", desc: "ALT" },
-            { title: "⬇ CALL READY or BROADCAST INTENTIONS ⬇", desc: "", note: true },
+            { title: "Throttle", desc: "1000 RPM" },
+            { title: "Avionics", desc: "OFF" },
+            { title: "Magnetos", desc: "Check L & R then to BOTH" },
+            { title: "Throttle", desc: "FULL CLOSED" },
+            { title: "Mixture", desc: "IDLE CUT-OFF" },
+            { title: "Magnetos", desc: "OFF" },
+            { title: "BATT/ALT Master", desc: "OFF" },
+            { title: "Controls/Throttle", desc: "SECURED & LOCKED" },
+            { title: "Aircraft", desc: "SECURED" },
           ],
         },
       ];

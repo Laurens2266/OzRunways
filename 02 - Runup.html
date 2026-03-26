@@ -13,6 +13,8 @@
       .item-desc { font-size: 1em; color: #555; margin-top: 5px; }
       .item-tick { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); font-size: 2em; color: #4caf50; display: none; }
       .item.done .item-tick { display: block; }
+      .item.note { background: #fff8e1; border-color: #ffc107; cursor: default; }
+      .item.note .item-title { font-size: 1.1em; font-weight: normal; color: #795548; font-style: italic; }
       .reset-button { margin-top: 30px; padding: 20px; width: 100%; font-size: 1.5em; background-color: #ff5252; color: white; border: none; border-radius: 10px; cursor: pointer; }
       .reset-button:active { background-color: #e53935; }
       #checklist-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
@@ -22,31 +24,18 @@
       .toc { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; padding: 10px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 8px; }
       .toc-link { font-size: 1em; text-decoration: none; padding: 8px 12px; background: #2196f3; color: white; border-radius: 5px; }
       .toc-link:active { background: #1976d2; }
-      .freq-box { background: #1a237e; color: white; border-radius: 10px; padding: 16px 20px; margin: 20px 0 10px 0; }
-      .freq-box h2 { margin: 0 0 10px 0; font-size: 1.2em; letter-spacing: 0.05em; color: #90caf9; }
-      .freq-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #283593; font-size: 1.1em; }
-      .freq-row:last-child { border-bottom: none; }
-      .freq-label { color: #bbdefb; }
-      .freq-value { font-weight: bold; font-family: monospace; font-size: 1.1em; }
     </style>
   </head>
   <body>
-    <div id="checklist-links">
-      <a href="01 - Start and Taxi.html">01 Start & Taxi</a>
+        <div id="checklist-links">
+      <a href="01 - Start and Taxi.html">01 Start &amp; Taxi</a>
       <a href="02 - Runup.html">02 Runup</a>
       <a href="03 - Air.html">03 Air</a>
       <a href="04 - After Landing.html">04 After Landing</a>
       <a href="05 - Emergency.html">05 Emergency</a>
+      <a href="fuel_plan.html">⛽ Fuel Plan</a>
+      <a href="rvac_wb.html">⚖️ W&amp;B</a>
     </div>
-
-    <div class="freq-box">
-      <h2>📻 Moorabbin Frequencies</h2>
-      <div class="freq-row"><span class="freq-label">ATIS</span><span class="freq-value">120.90</span></div>
-      <div class="freq-row"><span class="freq-label">MB Ground</span><span class="freq-value">134.25</span></div>
-      <div class="freq-row"><span class="freq-label">MB Tower East</span><span class="freq-value">118.10</span></div>
-      <div class="freq-row"><span class="freq-label">MB Tower West</span><span class="freq-value">123.00</span></div>
-    </div>
-
     <div id="toc" class="toc"></div>
     <div id="checklist"></div>
     <button class="reset-button" onclick="resetChecklist()">Reset</button>
@@ -54,52 +43,44 @@
     <script>
       const checklistData = [
         {
-          group: "Pre-Start",
+          group: "Pre-Take-Off",
           items: [
-            { title: "Pre-flight Inspection", desc: "COMPLETE" },
-            { title: "Maintenance Release", desc: "BRIEFED & SIGNED" },
-            { title: "Passenger Brief", desc: "COMPLETE" },
-            { title: "Seats & Seatbelts", desc: "ADJUSTED & LOCKED" },
             { title: "Park Brake", desc: "ON" },
-            { title: "Fuel Selector", desc: "ON – LEAST tank" },
-            { title: "Circuit Breakers", desc: "CHECK IN" },
-            { title: "Electrics/Avionics", desc: "OFF" },
-          ],
-        },
-        {
-          group: "Start Up",
-          items: [
+            { title: "Power", desc: "1000 RPM" },
+            { title: "Trim", desc: "SET FOR TAKE OFF" },
+            { title: "Throttle Friction", desc: "SET" },
+            { title: "⬇ ONCE OIL TEMP IN GREEN ⬇", desc: "", note: true },
             { title: "Mixture", desc: "RICH" },
-            { title: "Throttle", desc: "Set ¼\" Open" },
-            { title: "Carburettor Heat", desc: "OFF" },
-            { title: "BAT/ALT Master", desc: "ON" },
-            { title: "Fuel Pump", desc: "ON" },
-            { title: "Prime", desc: "IF REQUIRED (2-5 Strokes)" },
             { title: "Magnetos", desc: "ON BOTH" },
-            { title: "Check All Clear", desc: "CALL" },
-            { title: "Starter", desc: "ENGAGE" },
-          ],
-        },
-        {
-          group: "After Start",
-          items: [
-            { title: "Throttle", desc: "SET 1000 RPM" },
-            { title: "Oil Pressure", desc: "GREEN WITHIN 30 SEC or SHUTDOWN" },
-            { title: "Fin Anti-Collision Beacon", desc: "ON" },
+            { title: "Primer", desc: "LOCKED" },
+            { title: "Fuel Quantity", desc: "CHECK" },
+            { title: "Fuel Selector", desc: "FULLEST TANK" },
+            { title: "Flaps", desc: "CHECK & SET" },
+            { title: "Instruments & Avionics", desc: "CHECK STANDBY INSTRUMENTS, CHECK G5 PFD & HSI, SET RADIOS & GPS" },
+            { title: "Switches – 2000 RPM", desc: "CHECK MAGS (max 175 drop, 50 diff), CHECK CARBY HEAT" },
             { title: "Ammeter", desc: "POSITIVE" },
-            { title: "Fuel Pump", desc: "OFF" },
-            { title: "Mixture", desc: "LEAN" },
-            { title: "Radios/Avionics", desc: "ON" },
+            { title: "Engine Gauges", desc: "CHECK IN GREEN RANGE" },
+            { title: "Warning Annunciators", desc: "PRESS TO TEST" },
+            { title: "Throttle", desc: "IDLE (600-800 RPM), set 1000 RPM – MIXTURE LEAN FOR TAXI" },
+            { title: "Controls", desc: "CHECK FULL, FREE & CORRECT" },
+            { title: "Hatches & Harnesses", desc: "SHUT & SECURE" },
+            { title: "Take-off Safety Brief", desc: "REVIEW" },
           ],
         },
         {
-          group: "Taxi",
+          group: "Line Up",
           items: [
-            { title: "Brakes", desc: "TEST" },
-            { title: "G5 Artificial Horizon", desc: "LEVEL" },
-            { title: "Turn Co-Ordinator", desc: "L-TURN/R-SKID, R-TURN/L-SKID" },
-            { title: "G5 HSI", desc: "TURNING" },
-            { title: "Compass", desc: "TURNING" },
+            { title: "⬇ CONFIRM CORRECT FREQUENCY ⬇", desc: "", note: true },
+            { title: "Carburettor Heat", desc: "OFF" },
+            { title: "Controls", desc: "CHECK FULL, FREE & CORRECT" },
+            { title: "Fuel Pump", desc: "ON" },
+            { title: "Mixture", desc: "RICH" },
+            { title: "Magnetos", desc: "ON BOTH" },
+            { title: "Lights – Wing Anti-Col", desc: "ON ENTERING RWY" },
+            { title: "Lights – NAV", desc: "OFF (ON NIGHT/REDUCED VIS)" },
+            { title: "Lights – LDG", desc: "ON T/O CLEARANCE" },
+            { title: "Transponder", desc: "ALT" },
+            { title: "⬇ CALL READY or BROADCAST INTENTIONS ⬇", desc: "", note: true },
           ],
         },
       ];
@@ -136,31 +117,34 @@
 
         group.items.forEach((item) => {
           const div = document.createElement("div");
-          div.className = "item";
-          if (state.has(globalIndex)) div.classList.add("done");
+          div.className = item.note ? "item note" : "item";
+          if (!item.note && state.has(globalIndex)) div.classList.add("done");
 
           const title = document.createElement("div");
           title.className = "item-title";
           title.textContent = item.title;
-
-          const desc = document.createElement("div");
-          desc.className = "item-desc";
-          desc.textContent = item.desc;
-
-          const tick = document.createElement("div");
-          tick.className = "item-tick";
-          tick.innerHTML = "✔";
-
           div.appendChild(title);
-          div.appendChild(desc);
-          div.appendChild(tick);
 
-          div.addEventListener("click", () => {
-            div.classList.toggle("done");
-            if (div.classList.contains("done")) { state.add(globalIndex); }
-            else { state.delete(globalIndex); }
-            localStorage.setItem(storageKey, JSON.stringify([...state]));
-          });
+          if (item.desc) {
+            const desc = document.createElement("div");
+            desc.className = "item-desc";
+            desc.textContent = item.desc;
+            div.appendChild(desc);
+          }
+
+          if (!item.note) {
+            const tick = document.createElement("div");
+            tick.className = "item-tick";
+            tick.innerHTML = "✔";
+            div.appendChild(tick);
+
+            div.addEventListener("click", () => {
+              div.classList.toggle("done");
+              if (div.classList.contains("done")) { state.add(globalIndex); }
+              else { state.delete(globalIndex); }
+              localStorage.setItem(storageKey, JSON.stringify([...state]));
+            });
+          }
 
           checklistEl.appendChild(div);
           globalIndex++;
@@ -169,7 +153,7 @@
 
       function resetChecklist() {
         localStorage.removeItem(storageKey);
-        document.querySelectorAll(".item").forEach((el) => el.classList.remove("done"));
+        document.querySelectorAll(".item:not(.note)").forEach((el) => el.classList.remove("done"));
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     </script>

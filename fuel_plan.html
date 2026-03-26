@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fuel Plan — PA28 Warrior II</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 16px;
+        background: #f5f5f5;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 1.6em;
+        text-align: center;
+        margin: 0 0 6px 0;
+        color: #1a237e;
+      }
+
+      .subtitle {
+        text-align: center;
+        font-size: 0.95em;
+        color: #555;
+        margin-bottom: 16px;
+      }
+
+      #checklist-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+      #checklist-links a { text-decoration: none; padding: 10px 20px; background-color: #674ea7; color: white; border-radius: 6px; font-size: 1.1em; }
+      #checklist-links a:active { background-color: #1976d2; }
+      /* Flight type selector */
+      .flight-type-box {
+        background: #1a237e;
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 16px;
+        color: white;
+      }
+
+      .flight-type-box h2 {
+        margin: 0 0 12px 0;
+        font-size: 1.1em;
+        color: #90caf9;
+        letter-spacing: 0.05em;
+      }
+
+      .flight-type-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .type-btn {
+        flex: 1;
+        min-width: 140px;
+        padding: 14px 10px;
+        border: 2px solid #3949ab;
+        background: transparent;
+        color: white;
+        border-radius: 8px;
+        font-size: 1em;
+        cursor: pointer;
+        text-align: center;
+        transition: background 0.2s, border-color 0.2s;
+      }
+
+      .type-btn.active {
+        background: #3949ab;
+        border-color: #90caf9;
+      }
+
+      .type-btn .type-label {
+        display: block;
+        font-weight: bold;
+        font-size: 1.05em;
+      }
+
+      .type-btn .type-sub {
+        display: block;
+        font-size: 0.8em;
+        color: #bbdefb;
+        margin-top: 4px;
+      }
+
+      /* Fuel plan table */
+      .fuel-card {
+        background: white;
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 16px;
+        border: 2px solid #ccc;
+      }
+
+      .fuel-card h2 {
+        font-size: 1.1em;
+        color: #1a237e;
+        margin: 0 0 12px 0;
+        border-left: 4px solid #2196f3;
+        padding-left: 8px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95em;
+      }
+
+      th {
+        background: #e8eaf6;
+        color: #1a237e;
+        padding: 8px 6px;
+        text-align: center;
+        font-size: 0.85em;
+        border: 1px solid #c5cae9;
+      }
+
+      th:first-child {
+        text-align: left;
+        width: 30px;
+      }
+
+      th:nth-child(2) {
+        text-align: left;
+      }
+
+      td {
+        padding: 8px 6px;
+        border: 1px solid #e0e0e0;
+        vertical-align: middle;
+      }
+
+      td:first-child {
+        font-weight: bold;
+        color: #1a237e;
+        font-size: 0.9em;
+        width: 30px;
+        text-align: center;
+      }
+
+      td:nth-child(2) {
+        font-size: 0.9em;
+        color: #333;
+      }
+
+      td.calc {
+        text-align: center;
+        background: #f3f4ff;
+        font-weight: bold;
+        color: #1a237e;
+        font-size: 1em;
+        min-width: 55px;
+      }
+
+      td.calc.zero {
+        color: #aaa;
+        font-weight: normal;
+      }
+
+      td.calc.result {
+        background: #e8f5e9;
+        color: #2e7d32;
+        font-size: 1.05em;
+      }
+
+      td.calc.endurance {
+        background: #fff8e1;
+        color: #e65100;
+        font-size: 1.05em;
+      }
+
+      td.calc.margin {
+        background: #fce4ec;
+        color: #880e4f;
+      }
+
+      input[type="number"] {
+        width: 60px;
+        padding: 6px 4px;
+        border: 2px solid #90caf9;
+        border-radius: 6px;
+        font-size: 1em;
+        text-align: center;
+        background: #e8f4fd;
+        -moz-appearance: textfield;
+      }
+
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        opacity: 1;
+      }
+
+      input[type="number"]:focus {
+        outline: none;
+        border-color: #1565c0;
+        background: #fff;
+      }
+
+      tr.disabled td {
+        opacity: 0.4;
+      }
+
+      tr.highlight td {
+        background: #e8eaf6;
+      }
+
+      /* Info box */
+      .info-box {
+        background: #1a237e;
+        color: white;
+        border-radius: 10px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        font-size: 0.9em;
+      }
+
+      .info-box h2 {
+        margin: 0 0 10px 0;
+        font-size: 1em;
+        color: #90caf9;
+        letter-spacing: 0.05em;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid #283593;
+        font-size: 0.95em;
+      }
+
+      .info-row:last-child {
+        border-bottom: none;
+      }
+
+      .info-label { color: #bbdefb; }
+      .info-value { font-weight: bold; font-family: monospace; }
+
+      /* Status box */
+      .status-box {
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 16px;
+        font-size: 1em;
+        font-weight: bold;
+        text-align: center;
+        display: none;
+      }
+
+      .status-box.ok {
+        background: #c8f7c5;
+        border: 2px solid #4caf50;
+        color: #1b5e20;
+        display: block;
+      }
+
+      .status-box.warn {
+        background: #fff9c4;
+        border: 2px solid #f9a825;
+        color: #e65100;
+        display: block;
+      }
+
+      /* Reset button */
+      .reset-button {
+        margin-top: 10px;
+        padding: 18px;
+        width: 100%;
+        font-size: 1.3em;
+        background-color: #ff5252;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      .reset-button:active { background-color: #e53935; }
+
+      .note {
+        font-size: 0.8em;
+        color: #795548;
+        font-style: italic;
+        margin-top: 4px;
+      }
+
+      .section-note {
+        background: #fff8e1;
+        border: 1px solid #ffc107;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 0.88em;
+        color: #5d4037;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="checklist-links">
+      <a href="01 - Start and Taxi.html">01 Start &amp; Taxi</a>
+      <a href="02 - Runup.html">02 Runup</a>
+      <a href="03 - Air.html">03 Air</a>
+      <a href="04 - After Landing.html">04 After Landing</a>
+      <a href="05 - Emergency.html">05 Emergency</a>
+      <a href="fuel_plan.html">⛽ Fuel Plan</a>
+      <a href="rvac_wb.html">⚖️ W&amp;B</a>
+    </div>
+    <h1>⛽ Fuel Plan</h1>
+    <div class="subtitle">PA28-161 Warrior II · VFR Day · YMMB</div>
+
+    <!-- Aircraft constants -->
+    <div class="info-box">
+      <h2>📋 Aircraft Data (RVAC Warrior II)</h2>
+      <div class="info-row"><span class="info-label">Block fuel flow</span><span class="info-value">36 L/hr</span></div>
+      <div class="info-row"><span class="info-label">Holding fuel flow</span><span class="info-value">25 L/hr</span></div>
+      <div class="info-row"><span class="info-label">Usable fuel (full)</span><span class="info-value">182 L</span></div>
+      <div class="info-row"><span class="info-label">Taxi allowance</span><span class="info-value">5 L/airport</span></div>
+      <div class="info-row"><span class="info-label">Final reserve (VFR piston)</span><span class="info-value">30 min @ 25 L/hr = 12.5 L</span></div>
+    </div>
+
+    <!-- Flight type selector -->
+    <div class="flight-type-box">
+      <h2>✈️ SELECT FLIGHT TYPE</h2>
+      <div class="flight-type-buttons">
+        <button class="type-btn active" data-type="local" onclick="setFlightType('local')">
+          <span class="type-label">Local / Dual</span>
+          <span class="type-sub">Training area, dual flight</span>
+        </button>
+        <button class="type-btn" data-type="solo_ta" onclick="setFlightType('solo_ta')">
+          <span class="type-label">Solo – Training Area</span>
+          <span class="type-sub">+45 min discretionary</span>
+        </button>
+        <button class="type-btn" data-type="solo_xc" onclick="setFlightType('solo_xc')">
+          <span class="type-label">Solo – Cross Country</span>
+          <span class="type-sub">+60 min discretionary</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="status-box" class="status-box"></div>
+
+    <!-- Fuel Plan Table -->
+    <div class="fuel-card">
+      <h2>Fuel Calculation</h2>
+      <div class="section-note" id="flight-note">Dual/local flight — no discretionary fuel required.</div>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Item</th>
+            <th>Min</th>
+            <th>Litres</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- a: Taxi -->
+          <tr id="row-a">
+            <td>a</td>
+            <td>Taxi fuel<br><span class="note">5 L per airport</span></td>
+            <td class="calc zero">—</td>
+            <td class="calc" id="a-l">5</td>
+          </tr>
+
+          <!-- b: Trip -->
+          <tr id="row-b">
+            <td>b</td>
+            <td>Trip fuel<br><span class="note">Enter total leg time</span></td>
+            <td><input type="number" id="b-min" min="0" max="600" placeholder="min" oninput="calculate()" /></td>
+            <td class="calc" id="b-l">—</td>
+          </tr>
+
+          <!-- c: Contingency — always 0 for 141/142 -->
+          <tr id="row-c" class="disabled">
+            <td>c</td>
+            <td>Contingency<br><span class="note">Not required — Part 141/142</span></td>
+            <td class="calc zero">0</td>
+            <td class="calc zero">0</td>
+          </tr>
+
+          <!-- d: Destination alternate -->
+          <tr id="row-d">
+            <td>d</td>
+            <td>Destination alternate<br><span class="note">Only if required (no TAF / wx below minima)</span></td>
+            <td><input type="number" id="d-min" min="0" max="120" placeholder="min" oninput="calculate()" /></td>
+            <td class="calc" id="d-l">0</td>
+          </tr>
+
+          <!-- e: Final reserve — fixed -->
+          <tr id="row-e">
+            <td>e</td>
+            <td>Final reserve<br><span class="note">30 min @ 25 L/hr — mandatory</span></td>
+            <td class="calc">30</td>
+            <td class="calc">12.5</td>
+          </tr>
+
+          <!-- f: Additional — always 0 for 141/142 -->
+          <tr id="row-f" class="disabled">
+            <td>f</td>
+            <td>Additional fuel<br><span class="note">Not required — Part 141/142</span></td>
+            <td class="calc zero">0</td>
+            <td class="calc zero">0</td>
+          </tr>
+
+          <!-- g: Holding -->
+          <tr id="row-g">
+            <td>g</td>
+            <td>Holding fuel<br><span class="note">Only if INTER/TEMPO forecast at destination</span></td>
+            <td><input type="number" id="g-min" min="0" max="60" placeholder="min" oninput="calculate()" /></td>
+            <td class="calc" id="g-l">0</td>
+          </tr>
+
+          <!-- h: Fuel required -->
+          <tr id="row-h" class="highlight">
+            <td>h</td>
+            <td><strong>Fuel required</strong><br><span class="note">a+b+c+d+e+f+g</span></td>
+            <td class="calc result" id="h-min">—</td>
+            <td class="calc result" id="h-l">—</td>
+          </tr>
+
+          <!-- i: Discretionary -->
+          <tr id="row-i">
+            <td>i</td>
+            <td>Discretionary fuel<br><span class="note" id="disc-note">Set by flight type</span></td>
+            <td class="calc" id="i-min">0</td>
+            <td class="calc" id="i-l">0</td>
+          </tr>
+
+          <!-- j: Margin — user enters actual fuel on board -->
+          <tr id="row-j">
+            <td>j</td>
+            <td>Fuel on board<br><span class="note">Enter actual litres uplifted</span></td>
+            <td class="calc margin" id="j-min">—</td>
+            <td><input type="number" id="j-l" min="0" max="182" placeholder="L" oninput="calculate()" /></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Fuel required summary -->
+    <div class="fuel-card" id="summary-card" style="display:none;">
+      <h2>📊 Summary</h2>
+      <table>
+        <tbody>
+          <tr>
+            <td>Minimum fuel required</td>
+            <td class="calc result" id="sum-min-fuel">—</td>
+          </tr>
+          <tr>
+            <td>Endurance (actual FOB)</td>
+            <td class="calc endurance" id="sum-endurance">—</td>
+          </tr>
+          <tr>
+            <td>Margin above requirement</td>
+            <td class="calc margin" id="sum-margin">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="reset-button" onclick="resetAll()">Reset</button>
+
+    <script>
+      const BLOCK_FLOW = 36;   // L/hr
+      const HOLD_FLOW  = 25;   // L/hr
+      const TAXI_L     = 5;    // litres
+      const RESERVE_MIN = 30;
+      const RESERVE_L   = 12.5;
+      const FULL_FUEL   = 182; // litres
+
+      let flightType = 'local';
+
+      const discMap = {
+        local:   { min: 0,  label: 'Dual/local — no discretionary required.' },
+        solo_ta: { min: 45, label: 'Solo training area — +45 min discretionary (RVAC policy).' },
+        solo_xc: { min: 60, label: 'Solo cross country — +60 min discretionary (RVAC policy).' },
+      };
+
+      function setFlightType(type) {
+        flightType = type;
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`[data-type="${type}"]`).classList.add('active');
+        document.getElementById('flight-note').textContent = discMap[type].label;
+        calculate();
+      }
+
+      function minToL(min, flowLph) {
+        return Math.round((min / 60) * flowLph * 10) / 10;
+      }
+
+      function fmt(val) {
+        if (val === null || val === undefined || isNaN(val)) return '—';
+        return val % 1 === 0 ? val.toString() : val.toFixed(1);
+      }
+
+      function fmtMin(min) {
+        if (min === null || isNaN(min)) return '—';
+        const h = Math.floor(min / 60);
+        const m = Math.round(min % 60);
+        if (h > 0) return `${h}h ${m}m`;
+        return `${m} min`;
+      }
+
+      function calculate() {
+        const bMin = parseFloat(document.getElementById('b-min').value) || 0;
+        const dMin = parseFloat(document.getElementById('d-min').value) || 0;
+        const gMin = parseFloat(document.getElementById('g-min').value) || 0;
+        const fob  = parseFloat(document.getElementById('j-l').value);  // fuel on board, may be NaN
+
+        const bL = minToL(bMin, BLOCK_FLOW);
+        const dL = minToL(dMin, HOLD_FLOW);
+        const gL = minToL(gMin, HOLD_FLOW);
+
+        // Row b
+        document.getElementById('b-l').textContent = bMin > 0 ? fmt(bL) : '—';
+
+        // Row d
+        document.getElementById('d-l').textContent = dMin > 0 ? fmt(dL) : '0';
+
+        // Row g
+        document.getElementById('g-l').textContent = gMin > 0 ? fmt(gL) : '0';
+
+        // h: fuel required
+        const hL   = TAXI_L + bL + 0 + dL + RESERVE_L + 0 + gL;
+        const hMin = bMin + dMin + RESERVE_MIN + gMin;
+        document.getElementById('h-l').textContent   = fmt(hL);
+        document.getElementById('h-min').textContent = fmtMin(hMin);
+
+        // i: discretionary
+        const iMin = discMap[flightType].min;
+        const iL   = minToL(iMin, BLOCK_FLOW);
+        document.getElementById('i-min').textContent = iMin > 0 ? fmtMin(iMin) : '0';
+        document.getElementById('i-l').textContent   = iMin > 0 ? fmt(iL) : '0';
+        document.getElementById('disc-note').textContent = discMap[flightType].label;
+
+        // j: fuel on board — show FOB in minutes (FOB ÷ 36)
+        if (!isNaN(fob)) {
+          const jMin = Math.round((fob / BLOCK_FLOW) * 60);
+          document.getElementById('j-min').textContent = fmtMin(jMin);
+
+          // margin for status/summary only
+          const marginL   = fob - hL - iL;
+          const marginMin = Math.round((marginL / BLOCK_FLOW) * 60);
+
+          // endurance = FOB ÷ 36
+          const kMin = Math.round((fob / BLOCK_FLOW) * 60);
+
+          // Status
+          const statusBox = document.getElementById('status-box');
+          if (bMin > 0) {
+            document.getElementById('summary-card').style.display = 'block';
+            document.getElementById('sum-min-fuel').textContent   = `${fmt(hL + iL)} L`;
+            document.getElementById('sum-endurance').textContent  = fmtMin(kMin);
+            document.getElementById('sum-margin').textContent     = marginL >= 0 ? fmtMin(marginMin) : '⚠ INSUFFICIENT';
+
+            if (fob >= hL + iL) {
+              statusBox.className   = 'status-box ok';
+              statusBox.textContent = `✓ Fuel sufficient. ${fmt(fob)} L on board, ${fmt(hL + iL)} L required. Endurance: ${fmtMin(kMin)}.`;
+            } else {
+              statusBox.className   = 'status-box warn';
+              statusBox.textContent = `⚠ Insufficient fuel. ${fmt(fob)} L on board, ${fmt(hL + iL)} L required. Uplift at least ${fmt(hL + iL)} L.`;
+            }
+          } else {
+            document.getElementById('summary-card').style.display = 'none';
+            statusBox.className = 'status-box';
+          }
+        } else {
+          // No FOB entered yet
+          document.getElementById('j-min').textContent = '—';
+          document.getElementById('status-box').className = 'status-box';
+          document.getElementById('summary-card').style.display = 'none';
+        }
+      }
+
+      function resetAll() {
+        document.getElementById('b-min').value = '';
+        document.getElementById('d-min').value = '';
+        document.getElementById('g-min').value = '';
+        document.getElementById('j-l').value   = '';
+        setFlightType('local');
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-type="local"]').classList.add('active');
+
+        // Reset log removed
+
+        document.getElementById('status-box').className = 'status-box';
+        document.getElementById('summary-card').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Initial render
+      calculate();
+    </script>
+  </body>
+</html>
