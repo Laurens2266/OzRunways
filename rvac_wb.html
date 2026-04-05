@@ -296,6 +296,7 @@
   <label for="acftSelect">Aircraft:</label>
   <select id="acftSelect" onchange="onAircraftChange()">
     <option value="BZE">VH-BZE</option>
+    <option value="ITK">VH-ITK</option>
     <option value="JIO">VH-JIO</option>
     <option value="RQM">VH-RQM</option>
     <option value="TPW">VH-TPW</option>
@@ -423,6 +424,19 @@ const AIRCRAFT = {
     maxFuel_usgal: 48,
     notes: 'STC SA00397NY — MTOW 1106 kg (RVAC checklist). Above 1055 kg: use CASA extended performance charts (+15% applied automatically).'
   },
+  ITK: {
+    name: 'VH-ITK',
+    type: 'Warrior III',
+    emptyWeight_lbs: 1552.2,    // 704.1 kg per Load Data Sheet (Airweigh AV70, 17-10-2012)
+    emptyCG_in: 86.4685,        // 2196.3 mm ÷ 25.4
+    emptyMoment_lbsin: 134214,  // per Load Data Sheet
+    maxTOW_kg: 1106,            // RVAC checklist
+    maxTOW_ext_lbs: 2440,
+    usesExtended: false,
+    maxBaggage_lbs: 200,
+    maxFuel_usgal: 48,
+    notes: 'Warrior III (PA-28-161 S/N 2842265) — MTOW 1106 kg (RVAC checklist). Load Data Sheet: Airweigh AV70, 17-10-2012.'
+  },
   JIO: {
     name: 'VH-JIO',
     type: 'Warrior II',
@@ -465,15 +479,15 @@ const AIRCRAFT = {
   TYD: {
     name: 'VH-TYD',
     type: 'Warrior III',
-    emptyWeight_lbs: 1570.2,   // Basic Empty Weight per W&B: 712.2 kg
-    emptyCG_in: 86.2323,       // per W&B Data Form Figure 6-5
-    emptyMoment_lbsin: 135402, // 1570.2 × 86.2323
-    maxTOW_kg: 1106,  // RVAC checklist
+    emptyWeight_lbs: 1583.0,    // 718 kg per Load Data Sheet (Airweigh AV70, 9-7-2010)
+    emptyCG_in: 86.22,          // 2190 mm ÷ 25.4
+    emptyMoment_lbsin: 136490,  // per Load Data Sheet
+    maxTOW_kg: 1106,            // RVAC checklist
     maxTOW_ext_lbs: 2440,
     usesExtended: false,
     maxBaggage_lbs: 200,
     maxFuel_usgal: 48,
-    notes: 'Warrior III (PA-28-161 VB-1610) — MTOW 1106 kg (RVAC checklist). Different performance charts from Warrior II fleet.'
+    notes: 'Warrior III (PA-28-161 S/N 2842339) — MTOW 1106 kg (RVAC checklist). Load Data Sheet: Airweigh AV70, 9-7-2010.'
   },
   UMB: {
     name: 'VH-UMB',
