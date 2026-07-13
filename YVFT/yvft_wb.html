@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VH-MSG — W&B Calculator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: sans-serif; background: #f5f5f5; color: #222; padding: 20px; }
+  h1 { font-size: 2em; text-align: center; margin-bottom: 16px; }
+
+  #checklist-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+  #checklist-links a { text-decoration: none; padding: 10px 20px; background-color: #00695c; color: white; border-radius: 6px; font-size: 1.2em; }
+  #checklist-links a:active { background-color: #004d40; }
+
+  .group-header { font-size: 1.3em; font-weight: bold; margin-top: 20px; margin-bottom: 10px; padding-left: 5px; color: #333; border-left: 4px solid #2196f3; }
+
+  .acft-info { background: #1a237e; color: white; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; font-size: 1em; line-height: 1.8; }
+  .acft-info strong { color: #90caf9; }
+
+  .wb-table-wrap { background: white; border: 2px solid #ccc; border-radius: 10px; padding: 10px; margin-bottom: 16px; overflow-x: auto; }
+  table.wb-table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+  table.wb-table th { background: #e8eaf6; color: #1a237e; padding: 8px 6px; text-align: center; font-size: 0.85em; border: 1px solid #c5cae9; }
+  table.wb-table td { padding: 6px; border: 1px solid #e0e0e0; text-align: center; }
+  table.wb-table td.item-label { text-align: left; font-weight: bold; }
+  table.wb-table tr.total-row td { background: #e8eaf6; font-weight: bold; }
+  table.wb-table tr.total-row.danger td { background: #ffebee; color: #c62828; }
+
+  table.wb-table input[type=number] {
+    width: 80px; font-size: 1.05em; padding: 6px 4px; text-align: center;
+    border: 2px solid #90caf9; border-radius: 6px; background: #e8f4fd;
+  }
+  table.wb-table input[type=number]:focus { outline: none; border-color: #1565c0; background: #fff; }
+
+  .status-banner { text-align: center; font-size: 1.3em; font-weight: bold; padding: 16px; border-radius: 10px; margin: 10px 0 20px 0; border: 2px solid #ccc; }
+  .status-banner.ok      { background: #c8f7c5; border-color: #4caf50; color: #2e7d32; }
+  .status-banner.danger  { background: #ffebee; border-color: #e53935; color: #c62828; }
+  .status-banner.neutral { background: white;   border-color: #ccc;    color: #888; }
+
+  .cg-line { text-align: center; font-size: 1.1em; font-family: monospace; color: #1a237e; margin-bottom: 16px; }
+
+  .envelope-container { background: white; border: 2px solid #ccc; border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; }
+  canvas { display: block; width: 100%; max-width: 460px; aspect-ratio: 400 / 340; }
+  .canvas-note { font-size: 0.85em; color: #666; padding: 8px 4px 0; text-align: center; }
+
+  .print-btn { display: block; width: 100%; margin-top: 24px; padding: 20px; font-size: 1.5em; background-color: #2196f3; color: white; border: none; border-radius: 10px; cursor: pointer; }
+  .print-btn:active { background-color: #1565c0; }
+  .print-only { display: none; }
+
+  @media print {
+    body { background: white; padding: 12px; font-size: 12px; }
+    .no-print, #checklist-links, input { display: none !important; }
+    table.wb-table input[type=number] { display: inline !important; border: none !important; background: none !important; }
+    .print-only { display: block !important; }
+    .print-header { text-align: center; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #333; }
+    .print-title { font-size: 1.4em; font-weight: bold; }
+    .print-meta { font-size: 0.95em; color: #555; margin-top: 4px; }
+    h1 { font-size: 1.4em; }
+    .group-header { margin-top: 12px; }
+  }
+</style>
+</head>
+<body>
+    <div id="checklist-links">
+      <a href="01 - Start and Taxi.html">01 Start &amp; Engine</a>
+      <a href="02 - Pre Take-off and Line Up.html">02 Pre-T/O &amp; Line Up</a>
+      <a href="03 - After Landing and Shutdown.html">03 After Landing</a>
+      <a href="04 - Radio Calls.html">04 Radio Calls</a>
+      <a href="05 - Pilot Notes.html">05 Pilot Notes</a>
+      <a href="fuel_plan.html">⛽ Fuel Plan</a>
+      <a href="yvft_wb.html">⚖️ W&amp;B</a>
+    </div>
+
+<h1>✈ VH-MSG W&amp;B Calculator</h1>
+
+<div class="acft-info">
+  <strong>Registration</strong> VH-MSG &nbsp;·&nbsp; <strong>Piper Model</strong> PA28-151 (Warrior I)<br>
+  <strong>MTOW</strong> 1054 kg &nbsp;·&nbsp; <strong>BEW</strong> 629 kg &nbsp;·&nbsp; <strong>BEW CofG</strong> 2187 mm<br>
+  Source: Warrior I Load Chart (VH-MSG).
+</div>
+
+<div class="group-header">Load Chart</div>
+<div class="wb-table-wrap">
+  <table class="wb-table">
+    <thead>
+      <tr><th>Item</th><th>Weight (Kg)</th><th>Arm (mm)</th><th>Moment (mm.Kg)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="item-label">Basic Empty Weight</td>
+        <td>629</td>
+        <td>2187</td>
+        <td>1375747</td>
+      </tr>
+      <tr>
+        <td class="item-label">Front Seats</td>
+        <td><input type="number" id="w-front" value="80" min="0" oninput="calculate()"></td>
+        <td>2045</td>
+        <td id="m-front">—</td>
+      </tr>
+      <tr>
+        <td class="item-label">Rear Seats</td>
+        <td><input type="number" id="w-rear" value="0" min="0" oninput="calculate()"></td>
+        <td>3000</td>
+        <td id="m-rear">—</td>
+      </tr>
+      <tr>
+        <td class="item-label">Rear Baggage (max 91.0Kg)</td>
+        <td><input type="number" id="w-bag" value="0" min="0" max="91" oninput="calculate()"></td>
+        <td>3627</td>
+        <td id="m-bag">—</td>
+      </tr>
+      <tr class="total-row" id="row-zfw">
+        <td class="item-label">Zero Fuel Wt:</td>
+        <td id="w-zfw">—</td>
+        <td></td>
+        <td id="m-zfw">—</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="wb-table-wrap">
+  <table class="wb-table">
+    <thead>
+      <tr><th>Fuel</th><th>Litres</th><th>Kg</th><th>Arm (mm)</th><th>Moment (mm.Kg)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="item-label">Full = 181ltr, 128.5Kg</td>
+        <td><input type="number" id="lit-fuel" value="120" min="0" max="181" oninput="calculate()"></td>
+        <td id="kg-fuel">—</td>
+        <td>2413</td>
+        <td id="m-fuel">—</td>
+      </tr>
+      <tr class="total-row" id="row-gross">
+        <td class="item-label" colspan="2">Gross Wt: &nbsp;MTOW = 1054Kg</td>
+        <td id="w-gross">—</td>
+        <td></td>
+        <td id="m-gross">—</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="status-banner neutral" id="wbStatus">Enter loading to calculate</div>
+<div class="cg-line">CG = <span id="v-cg">—</span> mm aft datum</div>
+
+<div class="group-header">Centre of Gravity Envelope</div>
+<div class="envelope-container">
+  <canvas id="cgCanvas" width="400" height="340"></canvas>
+  <div class="canvas-note">Envelope redrawn from the Warrior I Load Chart PDF. Dashed box = Utility Category limit.</div>
+</div>
+
+<button onclick="window.print()" class="print-btn no-print">🖨 Export to PDF</button>
+
+<div class="print-only print-header">
+  <div class="print-title">VH-MSG — W&amp;B Calculator</div>
+  <div class="print-meta" id="print-meta"></div>
+</div>
+
+<script>
+// ============================================================
+// AIRCRAFT DATA — VH-MSG (Piper PA-28-151 Warrior I)
+// From: YVFT Warrior I Load Chart
+// ============================================================
+const EMPTY_WEIGHT_KG = 629;
+const EMPTY_MOMENT = 1375747; // mm.kg, as per Load Chart table
+
+const ARM_FRONT = 2045;
+const ARM_REAR  = 3000;
+const ARM_BAG   = 3627;
+const ARM_FUEL  = 2413;
+
+const MAX_BAG_KG = 91.0;
+const MTOW_KG = 1054;
+const FULL_FUEL_L = 181;
+const FULL_FUEL_KG = 128.5;
+const KG_PER_L = FULL_FUEL_KG / FULL_FUEL_L; // 0.70994
+
+// Normal Category CG envelope (read from Load Chart graph)
+// Forward limit: 2110mm constant up to 883kg, then linear to 2200mm at MTOW (1054kg)
+// Aft limit: 2360mm constant across the full weight range
+// Utility Category (dashed): forward limit 2110mm, aft limit 2200mm, up to 883kg
+const ENV_FWD_LOW_CG = 2110, ENV_FWD_LOW_WT = 883;
+const ENV_FWD_HIGH_CG = 2200, ENV_FWD_HIGH_WT = MTOW_KG;
+const ENV_AFT_CG = 2360;
+const UTILITY_AFT_CG = 2200, UTILITY_WT = 883;
+
+function forwardLimit(weight) {
+  if (weight <= ENV_FWD_LOW_WT) return ENV_FWD_LOW_CG;
+  if (weight >= ENV_FWD_HIGH_WT) return ENV_FWD_HIGH_CG;
+  return ENV_FWD_LOW_CG + (weight - ENV_FWD_LOW_WT) / (ENV_FWD_HIGH_WT - ENV_FWD_LOW_WT) * (ENV_FWD_HIGH_CG - ENV_FWD_LOW_CG);
+}
+
+function num(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  return isNaN(v) ? 0 : v;
+}
+
+function setText(id, value, decimals) {
+  document.getElementById(id).textContent = Math.round(value * Math.pow(10, decimals || 0)) / Math.pow(10, decimals || 0);
+}
+
+function calculate() {
+  const wFront = num('w-front');
+  const wRear  = num('w-rear');
+  const wBag   = num('w-bag');
+  const litFuel = num('lit-fuel');
+
+  const mFront = wFront * ARM_FRONT;
+  const mRear  = wRear * ARM_REAR;
+  const mBag   = wBag * ARM_BAG;
+
+  setText('m-front', mFront);
+  setText('m-rear', mRear);
+  setText('m-bag', mBag);
+
+  const zfwWeight = EMPTY_WEIGHT_KG + wFront + wRear + wBag;
+  const zfwMoment = EMPTY_MOMENT + mFront + mRear + mBag;
+  setText('w-zfw', zfwWeight, 1);
+  setText('m-zfw', zfwMoment);
+
+  const fuelKg = litFuel * KG_PER_L;
+  const mFuel = fuelKg * ARM_FUEL;
+  setText('kg-fuel', fuelKg, 1);
+  setText('m-fuel', mFuel);
+
+  const grossWeight = zfwWeight + fuelKg;
+  const grossMoment = zfwMoment + mFuel;
+  setText('w-gross', grossWeight, 1);
+  setText('m-gross', grossMoment);
+
+  const cg = grossMoment / grossWeight;
+  document.getElementById('v-cg').textContent = cg.toFixed(0);
+
+  const wtOk = grossWeight <= MTOW_KG + 0.5;
+  const bagOk = wBag <= MAX_BAG_KG;
+  const fwdLimit = forwardLimit(grossWeight);
+  const cgOk = cg >= fwdLimit && cg <= ENV_AFT_CG;
+
+  document.getElementById('row-gross').className = 'total-row' + (wtOk ? '' : ' danger');
+
+  const statusEl = document.getElementById('wbStatus');
+  if (!wtOk) {
+    statusEl.className = 'status-banner danger';
+    statusEl.textContent = `⛔ OVERWEIGHT — exceeds ${MTOW_KG} kg MTOW`;
+  } else if (!bagOk) {
+    statusEl.className = 'status-banner danger';
+    statusEl.textContent = `⛔ BAGGAGE EXCEEDS ${MAX_BAG_KG} kg LIMIT`;
+  } else if (!cgOk) {
+    statusEl.className = 'status-banner danger';
+    statusEl.textContent = cg < fwdLimit ? '⛔ CG TOO FAR FORWARD' : '⛔ CG TOO FAR AFT';
+  } else {
+    statusEl.className = 'status-banner ok';
+    statusEl.textContent = '✓ Weight and CG within envelope';
+  }
+
+  drawEnvelope(grossWeight, cg);
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' });
+  const timeStr = now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('print-meta').innerHTML =
+    `VH-MSG &nbsp;·&nbsp; ${dateStr} ${timeStr}<br>` +
+    `Front: ${wFront} kg &nbsp;·&nbsp; Rear: ${wRear} kg &nbsp;·&nbsp; Fuel: ${litFuel} L &nbsp;·&nbsp; Baggage: ${wBag} kg`;
+}
+
+// ============================================================
+// PLOT CG ENVELOPE — redrawn from the Load Chart PDF graph
+// ============================================================
+function drawEnvelope(weight_kg, cg) {
+  const canvas = document.getElementById('cgCanvas');
+  const ctx = canvas.getContext('2d');
+
+  const rect = canvas.getBoundingClientRect();
+  const W = rect.width, H = rect.height;
+  const dpr = window.devicePixelRatio || 1;
+  const key = W + 'x' + H + '@' + dpr;
+  if (canvas.dataset.sized !== key) {
+    canvas.dataset.sized = key;
+    canvas.width = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = { l: 50, r: 20, t: 30, b: 40 };
+  const plotW = W - pad.l - pad.r;
+  const plotH = H - pad.t - pad.b;
+
+  const cgMin = 2050, cgMax = 2400;
+  const wtMin = 700, wtMax = 1100;
+
+  function toX(cg_mm) { return pad.l + (cg_mm - cgMin) / (cgMax - cgMin) * plotW; }
+  function toY(wt)     { return pad.t + plotH - (wt - wtMin) / (wtMax - wtMin) * plotH; }
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 13px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Centre of Gravity Envelope', pad.l + plotW / 2, 16);
+
+  ctx.strokeStyle = '#e0e0e0';
+  ctx.lineWidth = 1;
+  for (let c = cgMin; c <= cgMax; c += 50) {
+    ctx.beginPath(); ctx.moveTo(toX(c), pad.t); ctx.lineTo(toX(c), pad.t + plotH); ctx.stroke();
+  }
+  for (let w = wtMin; w <= wtMax; w += 100) {
+    ctx.beginPath(); ctx.moveTo(pad.l, toY(w)); ctx.lineTo(pad.l + plotW, toY(w)); ctx.stroke();
+  }
+
+  ctx.strokeStyle = '#999';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(pad.l, pad.t, plotW, plotH);
+
+  // Normal Category envelope (solid)
+  ctx.beginPath();
+  ctx.moveTo(toX(ENV_FWD_LOW_CG), toY(wtMin));
+  ctx.lineTo(toX(ENV_FWD_LOW_CG), toY(ENV_FWD_LOW_WT));
+  ctx.lineTo(toX(ENV_FWD_HIGH_CG), toY(ENV_FWD_HIGH_WT));
+  ctx.lineTo(toX(ENV_AFT_CG), toY(ENV_FWD_HIGH_WT));
+  ctx.lineTo(toX(ENV_AFT_CG), toY(wtMin));
+  ctx.strokeStyle = '#1a237e';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Utility Category envelope (dashed)
+  ctx.beginPath();
+  ctx.moveTo(toX(ENV_FWD_LOW_CG), toY(UTILITY_WT));
+  ctx.lineTo(toX(UTILITY_AFT_CG), toY(UTILITY_WT));
+  ctx.lineTo(toX(UTILITY_AFT_CG), toY(wtMin));
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 4]);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#333';
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('UTILITY CATEGORY', toX(ENV_FWD_LOW_CG) + 4, toY(UTILITY_WT) + 30);
+
+  // Aircraft position dot
+  const clampedCg = Math.min(Math.max(cg, cgMin), cgMax);
+  const clampedWt = Math.min(Math.max(weight_kg, wtMin), wtMax);
+  const dotX = toX(clampedCg);
+  const dotY = toY(clampedWt);
+
+  ctx.beginPath();
+  ctx.arc(dotX, dotY, 6, 0, Math.PI * 2);
+  ctx.fillStyle = '#e53935';
+  ctx.fill();
+  ctx.strokeStyle = '#b71c1c';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#888';
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'center';
+  for (let c = cgMin; c <= cgMax; c += 50) ctx.fillText(c, toX(c), pad.t + plotH + 14);
+  ctx.textAlign = 'right';
+  for (let w = wtMin; w <= wtMax; w += 100) ctx.fillText(w, pad.l - 4, toY(w) + 3);
+
+  ctx.fillStyle = '#666';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('C of G (mm AFT of Datum)', pad.l + plotW / 2, H - 6);
+  ctx.save();
+  ctx.translate(12, pad.t + plotH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('Total Weight (Kg)', 0, 0);
+  ctx.restore();
+}
+
+calculate();
+</script>
+</body>
+</html>

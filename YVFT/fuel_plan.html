@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fuel Plan — PA28 Warrior I (YVFT)</title>
+    <style>
+      body { font-family: sans-serif; padding: 16px; background: #f5f5f5; margin: 0; }
+      h1 { font-size: 1.6em; text-align: center; margin: 0 0 6px 0; color: #1a237e; }
+      .subtitle { text-align: center; font-size: 0.95em; color: #555; margin-bottom: 16px; }
+
+      #checklist-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+      #checklist-links a { text-decoration: none; padding: 10px 20px; background-color: #00695c; color: white; border-radius: 6px; font-size: 1.1em; }
+      #checklist-links a:active { background-color: #004d40; }
+
+      .info-box { background: #1a237e; color: white; border-radius: 10px; padding: 14px 16px; margin-bottom: 16px; font-size: 0.9em; }
+      .info-box h2 { margin: 0 0 10px 0; font-size: 1em; color: #90caf9; letter-spacing: 0.05em; }
+      .info-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #283593; font-size: 0.95em; }
+      .info-row:last-child { border-bottom: none; }
+      .info-label { color: #bbdefb; }
+      .info-value { font-weight: bold; font-family: monospace; }
+
+      .fuel-card { background: white; border-radius: 10px; padding: 16px; margin-bottom: 16px; border: 2px solid #ccc; }
+      .fuel-card h2 { font-size: 1.1em; color: #1a237e; margin: 0 0 12px 0; border-left: 4px solid #2196f3; padding-left: 8px; }
+
+      .input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+      .input-row .row-label { font-size: 1.1em; font-weight: bold; }
+      input[type="number"] { width: 80px; padding: 8px; border: 2px solid #90caf9; border-radius: 6px; font-size: 1.1em; text-align: center; background: #e8f4fd; }
+      input[type="number"]:focus { outline: none; border-color: #1565c0; background: #fff; }
+
+      .result-line { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid #eee; font-size: 1.05em; }
+      .result-line .val { font-weight: bold; color: #1a237e; font-family: monospace; }
+
+      table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-top: 6px; }
+      th { background: #e8eaf6; color: #1a237e; padding: 6px 4px; text-align: center; font-size: 0.85em; border: 1px solid #c5cae9; }
+      td { padding: 6px 4px; border: 1px solid #e0e0e0; text-align: center; }
+      tr.closest td { background: #fff59d; font-weight: bold; }
+
+      .status-box { border-radius: 10px; padding: 16px; margin-bottom: 16px; font-size: 1em; font-weight: bold; text-align: center; display: none; }
+      .status-box.ok { background: #c8f7c5; border: 2px solid #4caf50; color: #1b5e20; display: block; }
+      .status-box.warn { background: #fff9c4; border: 2px solid #f9a825; color: #e65100; display: block; }
+
+      .reset-button { margin-top: 10px; padding: 18px; width: 100%; font-size: 1.3em; background-color: #ff5252; color: white; border: none; border-radius: 10px; cursor: pointer; }
+      .reset-button:active { background-color: #e53935; }
+      .note { font-size: 0.8em; color: #795548; font-style: italic; margin-top: 4px; }
+    </style>
+  </head>
+  <body>
+    <div id="checklist-links">
+      <a href="01 - Start and Taxi.html">01 Start &amp; Engine</a>
+      <a href="02 - Pre Take-off and Line Up.html">02 Pre-T/O &amp; Line Up</a>
+      <a href="03 - After Landing and Shutdown.html">03 After Landing</a>
+      <a href="04 - Radio Calls.html">04 Radio Calls</a>
+      <a href="05 - Pilot Notes.html">05 Pilot Notes</a>
+      <a href="fuel_plan.html">⛽ Fuel Plan</a>
+      <a href="yvft_wb.html">⚖️ W&amp;B</a>
+    </div>
+    <h1>⛽ Fuel Plan</h1>
+    <div class="subtitle">PA28-151 Warrior I · YCEM Coldstream</div>
+
+    <div class="info-box">
+      <h2>📋 YVFT Fuel Facts</h2>
+      <div class="info-row"><span class="info-label">Planning rate (all flights)</span><span class="info-value">36 L/hr</span></div>
+      <div class="info-row"><span class="info-label">Usable fuel (full)</span><span class="info-value">180 L</span></div>
+      <div class="info-row"><span class="info-label">Usable fuel (to tabs)</span><span class="info-value">129 L (64.6 L/tank)</span></div>
+      <div class="info-row"><span class="info-label">YVFT minimum fuel requirement</span><span class="info-value">63 L — all flights</span></div>
+      <div class="info-row"><span class="info-label">Fuel uplifts</span><span class="info-value">Log on blue card</span></div>
+      <div class="info-row"><span class="info-label">Oil uplifts</span><span class="info-value">Log on maintenance release</span></div>
+    </div>
+
+    <div id="status-box" class="status-box"></div>
+
+    <div class="fuel-card">
+      <h2>Trip Fuel</h2>
+      <div class="input-row">
+        <span class="row-label">Planned flight time</span>
+        <div><input type="number" id="trip-min" min="0" max="600" placeholder="min" oninput="calculate()" /> min</div>
+      </div>
+      <div class="result-line"><span>Fuel required @ 36 L/hr</span><span class="val" id="trip-l">—</span></div>
+
+      <div class="input-row" style="margin-top:16px;">
+        <span class="row-label">Fuel on board</span>
+        <div><input type="number" id="fob-l" min="0" max="180" placeholder="L" oninput="calculate()" /> L</div>
+      </div>
+      <div class="result-line"><span>Endurance @ 36 L/hr</span><span class="val" id="fob-min">—</span></div>
+    </div>
+
+    <!-- Load & Endurance reference table -->
+    <div class="fuel-card">
+      <h2>📖 Load &amp; Endurance Table (YVFT Pilot Notes)</h2>
+      <table>
+        <thead><tr><th>Usable Fuel (L)</th><th>Endurance (min)</th><th>MSG Load remaining (kg)</th><th>ITE Load remaining (kg)</th></tr></thead>
+        <tbody>
+          <tr data-liters="180"><td>180</td><td>300</td><td>291</td><td>266</td></tr>
+          <tr data-liters="170"><td>170</td><td>283</td><td>299</td><td>274</td></tr>
+          <tr data-liters="160"><td>160</td><td>266</td><td>306</td><td>281</td></tr>
+          <tr data-liters="150"><td>150</td><td>250</td><td>313</td><td>288</td></tr>
+          <tr data-liters="140"><td>140</td><td>233</td><td>320</td><td>295</td></tr>
+          <tr data-liters="130"><td>130</td><td>216</td><td>327</td><td>302</td></tr>
+          <tr data-liters="129"><td>129 (tabs)</td><td>215</td><td>328</td><td>303</td></tr>
+          <tr data-liters="120"><td>120</td><td>200</td><td>335</td><td>310</td></tr>
+          <tr data-liters="110"><td>110</td><td>183</td><td>342</td><td>317</td></tr>
+          <tr data-liters="100"><td>100</td><td>166</td><td>349</td><td>324</td></tr>
+          <tr data-liters="90"><td>90</td><td>150</td><td>356</td><td>331</td></tr>
+          <tr data-liters="80"><td>80</td><td>133</td><td>363</td><td>338</td></tr>
+          <tr data-liters="70"><td>70</td><td>116</td><td>371</td><td>346</td></tr>
+          <tr data-liters="60"><td>60</td><td>100</td><td>378</td><td>353</td></tr>
+        </tbody>
+      </table>
+      <div class="note">Load remaining = maximum allowable weight of people and cargo with the fuel quantity shown. Balance must be calculated separately (see W&amp;B tool). Based on MSG BEW 633 kg, ITE BEW 658 kg, MTOW 1054 kg.</div>
+    </div>
+
+    <button class="reset-button" onclick="resetAll()">Reset</button>
+
+    <script>
+      const BLOCK_FLOW = 36;  // L/hr — YVFT planning rate, all flights
+      const MIN_FUEL_L = 63;  // YVFT minimum fuel requirement, all flights
+      const FULL_FUEL  = 180; // L usable
+
+      function fmt(val) {
+        if (val === null || val === undefined || isNaN(val)) return '—';
+        return val % 1 === 0 ? val.toString() : val.toFixed(1);
+      }
+
+      function fmtMin(min) {
+        if (min === null || isNaN(min)) return '—';
+        const h = Math.floor(min / 60);
+        const m = Math.floor(min % 60);
+        if (h > 0) return `${h}h ${m}m`;
+        return `${m} min`;
+      }
+
+      function calculate() {
+        const tripMin = parseFloat(document.getElementById('trip-min').value);
+        const fob = parseFloat(document.getElementById('fob-l').value);
+
+        const statusBox = document.getElementById('status-box');
+        let requiredL = null;
+
+        if (!isNaN(tripMin)) {
+          requiredL = Math.round((tripMin / 60) * BLOCK_FLOW * 10) / 10;
+          document.getElementById('trip-l').textContent = `${fmt(requiredL)} L`;
+        } else {
+          document.getElementById('trip-l').textContent = '—';
+        }
+
+        if (!isNaN(fob)) {
+          const enduranceMin = Math.floor((fob / BLOCK_FLOW) * 60);
+          document.getElementById('fob-min').textContent = fmtMin(enduranceMin);
+
+          if (fob < MIN_FUEL_L) {
+            statusBox.className = 'status-box warn';
+            statusBox.textContent = `⚠ ${fmt(fob)} L is below the YVFT minimum fuel requirement of ${MIN_FUEL_L} L.`;
+          } else if (requiredL !== null && fob < requiredL) {
+            statusBox.className = 'status-box warn';
+            statusBox.textContent = `⚠ ${fmt(fob)} L on board, ${fmt(requiredL)} L required for planned flight of ${tripMin} min.`;
+          } else {
+            statusBox.className = 'status-box ok';
+            statusBox.textContent = `✓ ${fmt(fob)} L on board. Endurance: ${fmtMin(enduranceMin)}.`;
+          }
+        } else {
+          document.getElementById('fob-min').textContent = '—';
+          statusBox.className = 'status-box';
+        }
+
+        highlightClosestRow(isNaN(fob) ? null : fob);
+      }
+
+      function highlightClosestRow(fob) {
+        const rows = document.querySelectorAll('tr[data-liters]');
+        let closest = null;
+        let closestDiff = Infinity;
+
+        rows.forEach((row) => {
+          row.classList.remove('closest');
+          if (fob === null) return;
+          const diff = Math.abs(parseFloat(row.dataset.liters) - fob);
+          if (diff < closestDiff) {
+            closestDiff = diff;
+            closest = row;
+          }
+        });
+
+        if (closest) closest.classList.add('closest');
+      }
+
+      function resetAll() {
+        document.getElementById('trip-min').value = '';
+        document.getElementById('fob-l').value = '';
+        calculate();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      calculate();
+    </script>
+  </body>
+</html>

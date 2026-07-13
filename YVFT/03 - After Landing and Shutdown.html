@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <h1 id="page-title">Loading...</h1>
+    <style>
+      body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+      h1 { font-size: 2em; text-align: center; }
+      .item { position: relative; padding: 20px; margin: 10px 0; background: white; border: 2px solid #ccc; border-radius: 10px; cursor: pointer; user-select: none; }
+      .item.done { background: #c8f7c5; border-color: #4caf50; }
+      .item.note { background: #fff8e1; border-color: #ffc107; cursor: default; }
+      .item.note .item-title { font-size: 1.1em; font-weight: normal; color: #795548; font-style: italic; }
+      .item-title { font-size: 1.6em; font-weight: bold; }
+      .item-desc { font-size: 1em; color: #555; margin-top: 5px; }
+      .item-tick { position: absolute; top: 50%; right: 20px; transform: translateY(-50%); font-size: 2em; color: #4caf50; display: none; }
+      .item.done .item-tick { display: block; }
+      .reset-button { margin-top: 30px; padding: 20px; width: 100%; font-size: 1.5em; background-color: #ff5252; color: white; border: none; border-radius: 10px; cursor: pointer; }
+      .reset-button:active { background-color: #e53935; }
+      #checklist-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+      #checklist-links a { text-decoration: none; padding: 10px 20px; background-color: #00695c; color: white; border-radius: 6px; font-size: 1.2em; }
+      #checklist-links a:active { background-color: #004d40; }
+      .group-header { font-size: 1.3em; font-weight: bold; margin-top: 20px; margin-bottom: 10px; padding-left: 5px; color: #333; border-left: 4px solid #2196f3; }
+      .toc { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; padding: 10px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 8px; }
+      .toc-link { font-size: 1em; text-decoration: none; padding: 8px 12px; background: #2196f3; color: white; border-radius: 5px; }
+      .toc-link:active { background: #1976d2; }
+    </style>
+  </head>
+  <body>
+        <div id="checklist-links">
+      <a href="01 - Start and Taxi.html">01 Start &amp; Engine</a>
+      <a href="02 - Pre Take-off and Line Up.html">02 Pre-T/O &amp; Line Up</a>
+      <a href="03 - After Landing and Shutdown.html">03 After Landing</a>
+      <a href="04 - Radio Calls.html">04 Radio Calls</a>
+      <a href="05 - Pilot Notes.html">05 Pilot Notes</a>
+      <a href="fuel_plan.html">⛽ Fuel Plan</a>
+      <a href="yvft_wb.html">⚖️ W&amp;B</a>
+    </div>
+    <div id="toc" class="toc"></div>
+    <div id="checklist"></div>
+    <button class="reset-button" onclick="resetChecklist()">Reset</button>
+
+    <script>
+      const checklistData = [
+        {
+          group: "After Landing (Clean-up)",
+          items: [
+            { title: "Flaps", desc: "RETRACT" },
+            { title: "Fuel Pump", desc: "OFF" },
+            { title: "Transponder", desc: "OFF" },
+          ],
+        },
+        {
+          group: "Shutdown",
+          items: [
+            { title: "Throttle", desc: "1000 – 1200 RPM" },
+            { title: "Radios & Lights", desc: "OFF" },
+            { title: "Magnetos", desc: "Check for cut on each" },
+            { title: "Mixture", desc: "IDLE CUT OFF" },
+            { title: "Masters", desc: "OFF" },
+            { title: "Magnetos", desc: "OFF" },
+            { title: "Brakes", desc: "OFF" },
+          ],
+        },
+      ];
+    </script>
+
+    <script>
+      const filePath = window.location.pathname;
+      const fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+      const baseName = fileName.replace(".html", "").replace(/[-_]/g, " ");
+      const storageKey = `${fileName}_checklistState`;
+
+      document.getElementById("page-title").textContent = decodeURIComponent(
+        baseName.charAt(0).toUpperCase() + baseName.slice(1),
+      );
+
+      const checklistEl = document.getElementById("checklist");
+      const tocEl = document.getElementById("toc");
+      const state = new Set(JSON.parse(localStorage.getItem(storageKey) || "[]"));
+      let globalIndex = 0;
+
+      checklistData.forEach((group) => {
+        const id = group.group.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        const link = document.createElement("a");
+        link.href = `#${id}`;
+        link.textContent = group.group;
+        link.className = "toc-link";
+        tocEl.appendChild(link);
+
+        const groupHeader = document.createElement("div");
+        groupHeader.className = "group-header";
+        groupHeader.id = id;
+        groupHeader.textContent = group.group;
+        checklistEl.appendChild(groupHeader);
+
+        group.items.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = item.note ? "item note" : "item";
+          if (!item.note && state.has(globalIndex)) div.classList.add("done");
+
+          const title = document.createElement("div");
+          title.className = "item-title";
+          title.textContent = item.title;
+          div.appendChild(title);
+
+          if (item.desc) {
+            const desc = document.createElement("div");
+            desc.className = "item-desc";
+            desc.textContent = item.desc;
+            div.appendChild(desc);
+          }
+
+          if (!item.note) {
+            const tick = document.createElement("div");
+            tick.className = "item-tick";
+            tick.innerHTML = "✔";
+            div.appendChild(tick);
+
+            div.addEventListener("click", () => {
+              div.classList.toggle("done");
+              if (div.classList.contains("done")) { state.add(globalIndex); }
+              else { state.delete(globalIndex); }
+              localStorage.setItem(storageKey, JSON.stringify([...state]));
+            });
+          }
+
+          checklistEl.appendChild(div);
+          globalIndex++;
+        });
+      });
+
+      function resetChecklist() {
+        localStorage.removeItem(storageKey);
+        document.querySelectorAll(".item:not(.note)").forEach((el) => el.classList.remove("done"));
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
